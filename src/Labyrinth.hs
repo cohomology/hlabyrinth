@@ -21,6 +21,7 @@ import Data.SafeCopy(SafeCopy(..), contain, safePut, safeGet, deriveSafeCopy, ba
 import Data.Maybe(isJust, catMaybes)
 import Data.Array.MArray(newArray,writeArray,readArray,mapArray,getElems,freeze,thaw, getAssocs)
 import Data.Array.IArray(Array)
+import System.IO.Unsafe
 
 import Control.Error.Util(hoistMaybe)
 import Control.Monad.Trans(lift)
@@ -36,6 +37,7 @@ import Grid
 data BoxState = Empty | Border | StartField | TargetField | Path deriving(Eq, Show, Enum)
 data NextAction = SetBorder | SetStartField | SetTargetField deriving(Eq, Show, Enum)
 data ActionType = SetAction | UnSetAction deriving(Eq, Show)
+data Direction = North | NorthWest | West | SouthWest | South | SouthEast | East | NorthEast deriving(Eq,Show)
 
 type LabyArray = TArray (Int, Int) BoxState 
 type FrozenLabyArray = Array (Int, Int) BoxState 
@@ -338,6 +340,10 @@ labyFindAndMark (Just labyrinth) =
   where markBox :: PointInGridCoordinates Int -> STM (Maybe (RectangleInScreenCoordinates Int)) 
         markBox box = do writeArray (labyBoxState labyrinth) box Path   
                          return $ grBoxToPixel (labyGrid labyrinth) box
+
+labyMarkPathDirection :: [(Int, Int)] -> [(Direction, (Int, Int)]
+labyMarkPathDirection []    = []
+labyMarkPathDirection [(x1,y1),(x2,y2)] = case when x2 >
 
 labyFindPath :: Labyrinth -> STM [(Int, Int)]
 labyFindPath labyrinth = 
